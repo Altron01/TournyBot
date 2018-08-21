@@ -1,11 +1,11 @@
 'user strict';
 
-const config = require('./config');
+const config = require('./misc/config');
 const discord = require('discord.js');
 const client = new discord.Client();
-const scheduleManager = require('./schedulerManager');
-const logger = require('./logger');
-const dbManager = require('./dbManager');
+const scheduleManager = require('./lib/schedulerManager');
+const logger = require('./misc/logger');
+const dbManager = require('./lib/dbManager');
 client.on('ready', () => {
     logger.addLog('Discord Bot started');
     scheduleManager.setDiscord(client); 

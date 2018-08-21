@@ -4,3 +4,4 @@ node_modules/
 .env
 *.md
 LICENSE
+key_pairs

@@ -1,4 +1,4 @@
-# TornyBot
+# TournyBot
 Tournament Reminder bot for discord
 version: 0.1
 

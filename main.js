@@ -12,7 +12,7 @@ client.on('ready', () => {
 });
 
 function handleSub(msg, middleware){
-    var commands = msg.content.split('\s');
+    var commands = msg.content.split(' ');
     if(!middleware()) return;
     if(!(config.SUPPORTED_GAMES.includes(commands[2]))){
         msg.reply(commands[2] + ' not supported yet :(');
@@ -25,15 +25,15 @@ function handleSub(msg, middleware){
             games: [ commands[2] ]
         });
         else {
-            if(result.games.includes(commands[1])){
+            if(result.games.includes(commands[2])){
                 msg.reply('You are already suscribed :p');
                 return;
             }
             let games = result.games;
             games.push(commands[2]);
             dbManager.updateChannel({ id: msg.channel.id }, { $set: { games: games } });
-            msg.reply('Suscribed!!!! :p');
         }
+        msg.reply('Suscribed!!!! :p');
     });
 }
 
@@ -42,6 +42,7 @@ client.on('message', msg => {
     if(msg.guild.ownerID !== msg.author.id) return;
     if (msg.content.includes('sub')) {
         handleSub(msg, () => {
+            if(config.TYPE === 'dev') return true;
             if(!dbManager.getState()){
                 client.users.get(msg.guild.ownerID).send('Hey there was an error pls notify my creator :(');
                 return false;

@@ -11,29 +11,41 @@ client.on('ready', () => {
     scheduleManager.setDiscord(client); 
 });
 
-client.on('message', msg => {
-    var commands = msg.content.split(' ');
-    if (commands[0] === '!SUB') {
-        if(!(config.SUPPORTED_GAMES.includes(commands[1]))){
-            msg.reply(commands[1] + ' not supported yet');
-            return;
-        }
-        dbManager.selectChannel({ id: msg.channel.id })
-        .then(result => {
-            if(result === null) dbManager.insertChannel({
-                id: msg.channel.id,
-                games: [ commands[1] ]
-            });
-            else {
-                if(result.games.includes(commands[1])){
-                    msg.reply('You are already suscribed');
-                    return;
-                }
-                let games = result.games;
-                games.push(commands[1]);
-                dbManager.updateChannel({ id: msg.channel.id }, { $set: { games: games } });
-                msg.reply('Suscribed!!!!');
+function handleSub(msg, middleware){
+    var commands = msg.split('\s');
+    if(!middleware()) return;
+    if(!(config.SUPPORTED_GAMES.includes(msg[2]))){
+        msg.reply(commands[2] + ' not supported yet :(');
+        return;
+    }
+    dbManager.selectChannel({ id: msg.channel.id })
+    .then(result => {
+        if(result === null) dbManager.insertChannel({
+            id: msg.channel.id,
+            games: [ commands[2] ]
+        });
+        else {
+            if(result.games.includes(commands[1])){
+                msg.reply('You are already suscribed :p');
+                return;
             }
+            let games = result.games;
+            games.push(commands[2]);
+            dbManager.updateChannel({ id: msg.channel.id }, { $set: { games: games } });
+            msg.reply('Suscribed!!!! :p');
+        }
+    });
+}
+
+client.on('message', msg => {
+    if(!msg.content.includes('Tbot')) return;
+    if(msg.guild.ownerID !== msg.author.id) return;
+    if (msg.content.includes('sub')) {
+        handleSub(msg.content, () => {
+            if(!dbManager.getState()){
+                client.users.get(msg.guild.ownerID).send('Hey there was an error pls notify my creator :(');
+                return false;
+            } else return true;
         });
     }
 });

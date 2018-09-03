@@ -12,9 +12,9 @@ client.on('ready', () => {
 });
 
 function handleSub(msg, middleware){
-    var commands = msg.split('\s');
+    var commands = msg.content.split('\s');
     if(!middleware()) return;
-    if(!(config.SUPPORTED_GAMES.includes(msg[2]))){
+    if(!(config.SUPPORTED_GAMES.includes(commands[2]))){
         msg.reply(commands[2] + ' not supported yet :(');
         return;
     }
@@ -41,7 +41,7 @@ client.on('message', msg => {
     if(!msg.content.includes('Tbot')) return;
     if(msg.guild.ownerID !== msg.author.id) return;
     if (msg.content.includes('sub')) {
-        handleSub(msg.content, () => {
+        handleSub(msg, () => {
             if(!dbManager.getState()){
                 client.users.get(msg.guild.ownerID).send('Hey there was an error pls notify my creator :(');
                 return false;

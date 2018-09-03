@@ -2,6 +2,6 @@ node_modules/
 *.log
 .vscode
 .env
-*.md
+README.md
 LICENSE
 kp/
